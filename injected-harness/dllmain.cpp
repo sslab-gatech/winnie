@@ -1489,7 +1489,9 @@ DWORD CALLBACK cbThreadStart(LPVOID hModule)
 	fuzzer_printf("Timeout: %dms\n", fuzzer_settings.timeout);
 	fuzzer_printf("Minidumps (WER): %s\n", fuzzer_settings.enableWER ? "enabled" : "disabled");
 	fuzzer_printf("Processor affinity: 0x%x (%d cores)\n", fuzzer_settings.cpuAffinityMask, cpu_core_count);
-	fuzzer_printf("Will look for minidumps in %s\n", fuzzer_settings.minidump_path);
+	if (fuzzer_settings.enableWER) {
+		fuzzer_printf("Will look for minidumps in %s\n", fuzzer_settings.minidump_path);
+	}
 
 	if (!SetProcessAffinityMask(GetCurrentProcess(), fuzzer_settings.cpuAffinityMask)) {
 		FATAL("Failed to set process affinity");
