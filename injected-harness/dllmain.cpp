@@ -1504,12 +1504,12 @@ DWORD CALLBACK cbThreadStart(LPVOID hModule)
 
 	if (fuzzer_settings.mode == FORK) {
 		snprintf(forkserver_child_pipe, sizeof(forkserver_child_pipe), "\\\\.\\pipe\\forkserver-children-%d", pid);
-		childCpuAffinityMask = ~fuzzer_settings.cpuAffinityMask & ((1 << cpu_core_count) - 1);
+		childCpuAffinityMask = ~fuzzer_settings.cpuAffinityMask & ((1ULL << cpu_core_count) - 1ULL);
 	}
 
 	fuzzer_printf("Timeout: %dms\n", fuzzer_settings.timeout);
 	fuzzer_printf("Minidumps (WER): %s\n", fuzzer_settings.enableWER ? "enabled" : "disabled");
-	fuzzer_printf("Processor affinity: 0x%x (%d cores)\n", fuzzer_settings.cpuAffinityMask, cpu_core_count);
+	fuzzer_printf("Processor affinity: 0x%llx (%d cores)\n", fuzzer_settings.cpuAffinityMask, cpu_core_count);
 	if (fuzzer_settings.enableWER) {
 		fuzzer_printf("Will look for minidumps in %s\n", fuzzer_settings.minidump_path);
 	}
