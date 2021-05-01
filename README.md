@@ -11,7 +11,7 @@ Winnie-AFL is a fork of WinAFL that supports fuzzing using a fork()-like API. Fo
  - injected-harness/ -- A forkserver and instrumentation agent DLL which gets injected into fuzzing target programs. Communicates with the fuzzer over a named pipe IPC.
  - intel-libipt/ -- Prebuilt binaries for Intel's [libipt](https://github.com/intel/libipt)
  - ipttool/, libipt/ -- Controls the Windows Intel PT driver (forked from [winipt](https://github.com/ionescu007/winipt))
- - wow64ext/ -- Library for interacting with 64-bit address space from 32-bit (WoW64) applications (forked from [here](https://github.com/rwfpl/rewolf-wow64ext))
+ - wow64ext/ -- Library for interacting with 64-bit address space from 32-bit (WoW64) applications ([forked]((https://github.com/rwfpl/rewolf-wow64ext)))
  - samples/ -- An toy example target application to fuzz with supporting files and harness.
  - experiments/ -- Driver programs for testing individual components of the fuzzer.
 
@@ -27,7 +27,7 @@ Fuzzer can fuzz both 64-bit and 32-bit applications.
 
 ## Building
 
-We try to make the build process as streamlined as possible. Still, you need to prepare the build environment before compiling. We tested on Visual Studio 2017.
+We try to make the build process as streamlined as possible. Still, you need to prepare the build environment before compiling. You can use Visual Studio 2017 or 2019.
 
 ### Generate csrss offsets
 The forklib relies on hardcoded offsets that are reverse-engineered from `csrss.dll` and `ntdll.dll`. As you might expect, these offsets vary from system-to-system. **If the offsets are wrong, the fuzzer will not work. You need to regenerate the offsets and recompile for YOUR system.** To generate them:
@@ -44,7 +44,7 @@ The script downloads PDBs from Microsoft's symbol servers and parses them to ext
 
 ### Compile
 
-After that everything should "just work", just open the solution in VS2017 and build. You should use the Release configuration builds. The Debug builds are extremely slow as they sacrifice performance for verbosity and debug output.
+After that everything should "just work", just open the solution in VS2017 and build. VS2019 also should work. You should use the Release configuration builds. The Debug builds are extremely slow as they sacrifice performance for verbosity and debug output.
 
 ## Quick-start
 
@@ -205,7 +205,7 @@ There are a few hand-written harnesses for real-world applications included. Che
 
 - Use fork and fullspeed mode, avoid persistent mode and Intel PT as these are not as robust.
 
-- If the forkserver output scrolls by too fast, set the environment variable AFL_SAME_CONSOLE=1. This will make the forkserver output to the same stdout console as AFL, rather than its own window. Note that this mode *might* have a few of its own bugs/odd cases, though we try our best. You should avoid this unless you really need it to debug.
+- If the forkserver output scrolls by too fast, set the environment variable AFL_SAME_CONSOLE=1. This will make the forkserver output to the same stdout console as AFL, rather than its own window. Note that this mode *might* have a few of its own bugs/odd cases, though we try our best. You should avoid this unless you really need it to debug. To unset, you can use `set AFL_SAME_CONSOLE=` in cmd.
 
 - Read the section below ("How the target runs under Winnie") and figure things out in a debugger.
 
@@ -234,7 +234,7 @@ The code for this is in `spawn_child_with_injection` in AFL and `dllmain` in the
 
 During the forkserver initialization, we hooked several key locations. The main goal of this is to breakpoint the execution as soon as the target function is reached. We could do this by simply installing a software breakpoint (i.e., `int 3`) at the target function, but this is not robust as many programs employ self-modifying or self-unpacking code.
 
-To deal with this, we use set a *guard page* (i.e., no rwx; all accesses fault) with VirtualProtect on the target function page. Whenever this page is read, written, or executed, we will receive a page fault in our exception handler. If the fault *is not* execution (i.e., a read or a write), we unprotect the page, single step the faulting memory access instruction, reprotect the page, and resume. If the fault *is* execution, we assume that at this point the program's code is unpacked, and at *this* point we hook the target function with an assembled inline trampoline.
+To deal with this, we use set a *guard page* (i.e., no rwx; all accesses fault) with VirtualProtect on the target function page. Whenever this page is read, written, or executed, we will receive a page fault in our exception handler. The guard page protection is one-shot, so we need to re-apply it each time. If the fault *is not* execution (i.e., a read or a write), we single step the faulting memory access instruction, reprotect the page, and resume. If the fault *is* execution, we assume that at this point the program's code is unpacked, and at *this* point we hook the target function.
 
 During these early initialization steps, there is a lot that can go wrong. We mainly rely on two key elements: the guard page protection, and the exception handler. First, the guard page could go wrong if the target program changes the memory protection of the page itself. To deal with this, we hook `NtProtectVirtualMemory` to prevent the program from tampering with the guard page. Second, the exception filter may go wrong if the program adds its own exception filter before ours. To deal with this, we hook `RtlAddVectoredExceptionHandler` to make sure our exception handler always is first in the exception handling chain.
 
