@@ -49,7 +49,7 @@ FILE*fuzzer_stdout, *fuzzer_stdin;
 #endif
 
 // Global variables
-BYTE stolenBytes[TRAMPOLINE_SIZE] = { 0 };
+BYTE targetStolenBytes[TRAMPOLINE_SIZE] = { 0 }; // stolen bytes from hooking the target address
 struct breakpoint_t
 {
 	BYTE stolenByte;
@@ -298,11 +298,6 @@ void AssembleTrampoline(BYTE* dst, uintptr_t target, _Out_opt_ BYTE* stolenBytes
 	*(DWORD*)(trampoline + 1) = (DWORD)(target - ((uintptr_t)dst + 5));
 #endif  	
 	PatchCode(dst, trampoline, TRAMPOLINE_SIZE, stolenBytes);
-}
-
-void RestoreHookedBytes()
-{
-	PatchCode(target_address, stolenBytes, TRAMPOLINE_SIZE, NULL);
 }
 
 // stolenCount should align to instruction, and be larger than TRAMPOLINE_SIZE
@@ -1163,7 +1158,8 @@ extern "C" _declspec(noreturn) void harness_main()
 	earlyHandler = AddVectoredExceptionHandler(TRUE, EarlyExceptionHandler);
 
 	install_breakpoints();
-	RestoreHookedBytes();
+	// Restore target hook stolen bytes
+	PatchCode(target_address, targetStolenBytes, TRAMPOLINE_SIZE, NULL);
 
 	SetupServer();
 	
@@ -1280,10 +1276,10 @@ LONG WINAPI SuperEarlyExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
-	
+
 	if (ExceptionInfo->ExceptionRecord->ExceptionCode == STATUS_GUARD_PAGE_VIOLATION)
 	{
-		debug_printf("WOW!!! GUARD_PAGE!!! %p\n", ExceptionInfo->ExceptionRecord->ExceptionAddress);
+		debug_printf("WOW!!! GUARD_PAGE!!! ExceptionAddress=%p ExceptionInformation=%p\n", ExceptionInfo->ExceptionRecord->ExceptionAddress, ExceptionInfo->ExceptionRecord->ExceptionInformation[1]);
 
 		uintptr_t fault_addr = (uintptr_t)ExceptionInfo->ExceptionRecord->ExceptionAddress;
 		uintptr_t page_start = fault_addr - (fault_addr % systemInfo.dwPageSize);
@@ -1291,11 +1287,17 @@ LONG WINAPI SuperEarlyExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 		uintptr_t ip = ExceptionInfo->ContextRecord->INSTRUCTION_POINTER;
 
 		// we guess that it's unpacked if we're executing code in the same page as our target address.
-		if (page_start <= (uintptr_t)target_address && (uintptr_t)target_address < page_end && page_start <= ip && ip < page_end) {
+		if (page_start <= (uintptr_t)target_address && (uintptr_t)target_address < page_end && page_start <= ip && ip < page_end)
+		{
 			debug_printf("unpacked?\n");
-			AssembleTrampoline(target_address, (uintptr_t)FuzzingHarness, stolenBytes);
+			// we can't assemble a full trampoline right away, because the target address may be a 5-byte thunk.
+			// since the 64-bit trampoline is bigger than 5 bytes, it will corrupt the neighboring thunk.
+			// so put a breakpoint and wait until we actually execute this to put the full trampoline.
+			BYTE int3 = 0xCC;
+			PatchCode(target_address, &int3, 1, targetStolenBytes);
 		}
-		else {
+		else
+		{
 			debug_printf("not executing target address yet... single step over the access\n");
 			ExceptionInfo->ContextRecord->EFlags |= 0x100; // trap flag
 			singleStep = 1;
@@ -1303,6 +1305,25 @@ LONG WINAPI SuperEarlyExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
+
+	if (ExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_BREAKPOINT)
+	{
+		debug_printf("WOW!!! Early breakpoint!!! %p\n", ExceptionInfo->ExceptionRecord->ExceptionAddress);
+
+		LPVOID ip = (LPVOID)ExceptionInfo->ContextRecord->INSTRUCTION_POINTER;
+		if (ip == target_address)
+		{
+			debug_printf("Reached our target address breakpoint\n");
+			// restore the breakpoint
+			PatchCode(target_address, targetStolenBytes, 1, NULL);
+			// insert trampoline
+			AssembleTrampoline(target_address, (uintptr_t)FuzzingHarness, targetStolenBytes);
+			// resume execution
+			return EXCEPTION_CONTINUE_EXECUTION;
+		}
+		// we ignore other breakpoints
+	}
+
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 
