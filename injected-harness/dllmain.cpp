@@ -36,7 +36,7 @@ FILE*fuzzer_stdout, *fuzzer_stdin;
 #define trace_printf(fmt, ...) fprintf(fuzzer_stdout, "TRACE: " fmt, ##__VA_ARGS__##)
 #endif
 
-#define FATAL(f, ...) {fprintf(fuzzer_stdout, f ": %d\n", ##__VA_ARGS__##, GetLastError()); fprintf(fuzzer_stdout, "Press enter to exit\n"); fflush(fuzzer_stdout); getc(fuzzer_stdin); suicide(); }
+#define FATAL(f, ...) {fprintf(fuzzer_stdout, f ": %d\n", ##__VA_ARGS__##, GetLastError()); fprintf(fuzzer_stdout, "Press enter to exit\n"); fflush(fuzzer_stdout); (void)getc(fuzzer_stdin); suicide(); }
 
 #ifdef _WIN64
 #define INSTRUCTION_POINTER Rip
@@ -301,7 +301,7 @@ void AssembleTrampoline(BYTE* dst, uintptr_t target, _Out_opt_ BYTE* stolenBytes
 }
 
 // stolenCount should align to instruction, and be larger than TRAMPOLINE_SIZE
-void InlineHook(PVOID pOrgFn, PVOID pNewFn, PVOID* ppOrgFnCall, int stolenCount)
+void InlineHook(PVOID pOrgFn, PVOID pNewFn, PVOID* ppOrgFnCall, size_t stolenCount)
 {
 	// Stolen bytes (5) + Jump to the original function
 	*ppOrgFnCall = VirtualAlloc(NULL, 0x100, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
@@ -311,7 +311,7 @@ void InlineHook(PVOID pOrgFn, PVOID pNewFn, PVOID* ppOrgFnCall, int stolenCount)
 	debug_printf("inlinehook 2\n");
 
 	// Assemble the code BEFORE hooking, lest we suffer reentrancy issues...
-	debug_printf("will copy %d bytes\n", stolenCount - TRAMPOLINE_SIZE);
+	debug_printf("will copy %lld bytes\n", stolenCount - TRAMPOLINE_SIZE);
 	memcpy((PBYTE)*ppOrgFnCall + TRAMPOLINE_SIZE, (PBYTE)pOrgFn + TRAMPOLINE_SIZE, stolenCount - TRAMPOLINE_SIZE);
 	debug_printf("inlinehook 3\n");
 	
