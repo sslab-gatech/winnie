@@ -21,15 +21,15 @@ void check_fwrite()
     counter++;
 }
 
-void __stdcall fuzz_me(char* filename)
+__declspec(noinline) void __stdcall fuzz_me(char* filename)
 {
     char buf[201];
     ZeroMemory(&buf, 201);
     FILE *fp = fopen(filename, "rb");
     fread(buf, 1, 200, fp);
 
-    test_func_t Math_test_func = (test_func_t) GetProcAddress(hMathlib, "test"); // index
-    int result = Math_test_func(buf);      
+    test_func_t test_func = (test_func_t) GetProcAddress(hMathlib, "test"); // index
+    int result = test_func(buf);
     printf("Result: %d\n", result);    
     fclose(fp);  
 

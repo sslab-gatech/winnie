@@ -15,28 +15,34 @@ extern "C" __declspec(dllexport) int test(char *input)
   int v9;
 
   printf("msg:%s\n", input);
-  if ( *input == 't' )
+  if ( input[0] != 't' )
   {
     printf("Error 1\n");
     return 0;
   }
-  if ( input[1] == 'e' )
+  if ( input[1] != 'e' )
   {
     printf("Error 2\n");
     return 0;
   }
-  if ( input[2] == 's' )
+  if ( input[2] != 's' )
   {
+    printf("Error 3\n");
+    return 0;
+  }
+  if (input[3] == '*' )
+  {
+    // simple nullptr deref
+    *(volatile char*)0 = 1;
+    return 0;
+  }
+  else if (input[3] == '!')
+  {
+    // trigger a timeout
     Sleep(5000);
     return 0;
   }
-  v2 = input[3];
-  if ( v2 == 't' )
-  {
-    *(char*)0 = 1;
-    return 0;
-  }
-  if ( v2 != 101 )
+  else if (input[3] != 't' )
   {
     printf("Error 4\n");
     return 0;
