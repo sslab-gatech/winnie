@@ -1,0 +1,14 @@
+*.pyc
+*.swp
+*.bak
+temptrace*
+domitrace*
+.vscode
+
+# exclude pin binaries
+lib/META-INF
+lib/pin
+lib/pin*zip
+
+# exclude cache directory
+cache/
