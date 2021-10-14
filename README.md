@@ -158,7 +158,7 @@ Our implementation of fullspeed instrumentation depends on a pre-computed list o
 
 **It's very important that you don't duplicate basic blocks in the same module, and you don't repeat the same module twice.** We try to detect these cases and generate an error, but be careful.
 
-There are a number of programs to compute a list of basic blocks (IDA Pro, Binary Ninja, etc). **We provide a script for IDA Pro to automatically generate a suitable .bb file, see `bb.py`.**
+There are a number of programs to compute a list of basic blocks (IDA Pro, Binary Ninja, etc). **We provide a scripts for Ghirda or IDA Pro to automatically generate a suitable .bb file, see `scripts/`.**
 
 ## Minidump crash dumps and exception handling
 
