@@ -254,5 +254,7 @@ The code for this stuff is in `HarnessCallback` in the forkserver.
 
 ## Maintainers
 
-- Stephen Tong (@stong): fuzzer and forkserver
 - Jinho Jung (@jjung63): harness synthesizer 
+- Stephen Tong (@stong): fuzzer and forkserver
+
+As of January 2022, Winnie is no longer actively maintained. We recommend that users fork the project in case that continued development is desired.
