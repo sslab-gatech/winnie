@@ -19,13 +19,13 @@ Winnie-AFL is a fork of WinAFL that supports fuzzing using a fork()-like API. Fo
 
 ## Supported Systems
 
-The fuzzer was tested on Windows 10 x64 1809 17763.973. **Any other configurations should be considered as unsupported.** Notwithstanding that, it probably still works on most 64-bit Windows 10 systems 1809 and up (but no guarantees). Windows 7 isn't supported because of differences in the CSRSS and subsystem implementation.
+The fuzzer was tested on Windows 10 x64 1809 17763.973. It was tested on an Intel i7-7700HQ processor on a system with 16 GB of physical memory; Hyper-V, VBS, and HVCI were all disabled. **Any other configurations should be considered as unsupported.** Notwithstanding that, it probably still works on most 64-bit Windows 10 systems 1809 and up (but no guarantees). Windows 7 isn't supported because of differences in the CSRSS and subsystem implementation.
 
 The fuzzer requires Administrator permissions.
 
-According to some user reports, the fuzzer does not work on single-core machines. Four logical cores or more are recommended.
+According to some user reports, **the fuzzer does not work on single-core machines**. Four logical cores or more are recommended.
 
-Fuzzer can fuzz both 64-bit and 32-bit applications.
+Fuzzer can fuzz both 64-bit and 32-bit applications. **When fuzzing 64-bit applications, you must use a 64-bit build of the fuzzer. Likewise for fuzzing 32-bit applications, you must use a 32-bit build of the fuzzer.**
 
 ## Building
 
