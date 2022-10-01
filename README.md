@@ -23,6 +23,8 @@ The fuzzer was tested on Windows 10 x64 1809 17763.973. **Any other configuratio
 
 The fuzzer requires Administrator permissions.
 
+According to some user reports, the fuzzer does not work on single-core machines. Four logical cores or more are recommended.
+
 Fuzzer can fuzz both 64-bit and 32-bit applications.
 
 ## Building
