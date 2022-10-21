@@ -1,4 +1,21 @@
-# Walkthrough: Fuzzing an example program with Winnie
+# Complete Walkthrough: Fuzzing Toy Example
+This is a complete guide to setting up Winnie, installing required dependencies, and fuzzing the toy example found in `samples/toy_example`. 
+
+## Requirements:
+* Visual Studio 2017/2019
+* Ida Pro (64-bit) or Ghidra 
+* Winnie Code (unzipped to target directory)
+* Python 2.7.XX 
+* Windows 10 1809/21H2 (1809 preferred)
+* Virtual Machine or Enviroment with *at least* 4 cores per processor
+
+### Step 1: Install Python 2.7.XX 
+Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may run into pathing issues otherwise. Make sure when installing Python you select to install it to the path OR maunally add it to the path env variable. 
+#### NOTE: The default option is to NOT ADD IT TO THE PATH, so make sure to change this. 
+![installPythonToPath.png](./installPythonToPath.png)
+
+
+
 
 In this guide, I'll explain how to use Winnie to fuzz a toy example program. The code for this guide can be found in `samples/toy_example`. You can build it with Visual Studio. There are 3 projects in the solution:
 
