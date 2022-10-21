@@ -7,13 +7,19 @@ This is a complete guide to setting up Winnie, installing required dependencies,
 * Winnie Code (unzipped to target directory)
 * Python 2.7.XX 
 * Windows 10 1809/21H2 (1809 preferred)
-* Virtual Machine or Enviroment with *at least* 4 cores per processor
+* Virtual machine or enviroment with *at least* 4 cores per processor
+#### NOTE: Winnie only *offically* supports Windows 10 1809, Python 2.7.XX, and Visual Studio 2017. All other configurations are considered unsupported. 
 
 ### Step 1: Install Python 2.7.XX 
 Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may run into pathing issues otherwise. Make sure when installing Python you select to install it to the path OR maunally add it to the path env variable. 
 #### NOTE: The default option is to NOT ADD IT TO THE PATH, so make sure to change this. 
 ![installPythonToPath.png](./installPythonToPath.png)
 
+### Step 2: Install Ida Pro/Ghidra 
+Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note that Ida Pro requires you install a seperate version for Python 2 and Python 3. Make sure you select the version for Python 2.7. 
+![idaInstdall.png](./indaInstall.png)
+
+### Step 3: Install Visual Studio & Required SDK Dependencies
 
 
 
