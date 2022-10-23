@@ -8,6 +8,7 @@ This is a complete guide to setting up Winnie, installing required dependencies,
 * Python 2.7.XX 
 * Windows 10 1809/21H2 (1809 preferred)
 * Virtual machine or enviroment with *at least* 4 cores per processor
+* Windows CMD prompt (DO NOT USE POWERSHELL)
 #### NOTE: Winnie only *offically* supports Windows 10 1809, Python 2.7.XX, and Visual Studio 2017. All other configurations are considered unsupported. 
 
 ### Step 0: VM Setup: Configure for 4 Cores Per Processer
@@ -33,18 +34,36 @@ Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note t
 ![IdaInstall.png](./IdaInstall.png)
 
 
-### Step 3: Install Visual Studio & Required SDK Dependencies
+### Step 3: Generate csrss offsets
+The forklib relies on hardcoded offsets that are reverse-engineered from `csrss.dll` and `ntdll.dll`. As you might expect, these offsets vary from system-to-system. **If the offsets are wrong, the fuzzer will not work. You need to regenerate the offsets and recompile for YOUR system.** To generate them:
+
+```bash
+cd forklib/
+# python3 is not supported. Please use python2
+python2 -m pip install construct pefile # get dependencies
+python2 ./gen_csrss_offsets.py
+cat csrss_offsets.h # check the generated output
+```
+
+The script downloads PDBs from Microsoft's symbol servers and parses them to extract the offsets for you automatically.
+
+
+### Step 4: Install Visual Studio & Required SDK Dependencies
 Visual Studio 2017 is required to build the Winnie and toy example executables. Their are few key SDK's that need to be installed in order to build Winnie and the toy example correctly. 
 
 #### For x64 systems, you need:
-    * Windows 8.1 SDK
+    * Workloads: 
+        * Desktop Devolopment with C++ 
+    * Individual Components:
+        * Windows Universal C Runtime
+        * Windows 8.1 SDK
 
 
 
 
 
-### Step 4: Build Winnie: 
-First, open the containing folder using File >> open folder. You should have the entire repository
+### Step 5: Build Winnie: 
+First, open the containing folder using File >> open folder. You should have the entire repository pictured in the soultion explorer by default, but can open the soultion explorer via View >> Soultion Explorer.
 
 ![soultionExplorer.png](./soultionExplorer.png)
 
@@ -53,8 +72,14 @@ First, you need to build the Winnie executable. Select the FullSpeed.sln, and se
 
 ![startupItem.png](./startupItem.png)
 
+Start the build process by selecting Build >> Build FullSpeed.sln. You should recieve a success message along the lines of this: 
+![winnieSuccess.png](./winnieSuccess.png)
 
-### Step 5: Build Toy Example:
+#### NOTE: If you are recieving errors, you likely have a missing workload or dependency issue. While not all of the SDK's mentioned above are required, they are reccomendded for coverage reasons and simplicity to install. 
+
+
+
+### Step 6: Build Toy Example:
 
 In this guide, I'll explain how to use Winnie to fuzz a toy example program. The code for this guide can be found in `samples/toy_example`. You can build it with Visual Studio. There are 3 projects in the solution:
 
