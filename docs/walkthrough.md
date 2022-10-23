@@ -26,7 +26,7 @@ Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may 
 
 ### Step 2: Install Ida Pro/Ghidra 
 Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note that Ida Pro requires you install a seperate version for Python 2 and Python 3. Make sure you select the version for Python 2.7. 
-![idaInstall.png](./idaInstall.png)
+![IdaInstall.png](./IdaInstall.png)
 
 
 ### Step 3: Install Visual Studio & Required SDK Dependencies
