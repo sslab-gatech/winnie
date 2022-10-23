@@ -11,6 +11,11 @@ This is a complete guide to setting up Winnie, installing required dependencies,
 #### NOTE: Winnie only *offically* supports Windows 10 1809, Python 2.7.XX, and Visual Studio 2017. All other configurations are considered unsupported. 
 
 ### Step 0: VM Setup: Configure for 4 Cores Per Processer
+Winnie requires you to be able to fork different processes, and as such will throw an error if your VM does not have the proper configurations. Make sure you set *at least* 4 cores per processor. The minimum setting are pictured below for VMWare: 
+![vmSetup.png](./vmSetup.png)
+
+#### NOTE: If you VM is not properly configured, then you will run into the error pictured below. Make sure to reconfigure your VM based on the settings pictured above. 
+![forkserverError.png](./forkserverError.png)
 
 
 ### Step 1: Install Python 2.7.XX 
@@ -18,13 +23,31 @@ Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may 
 #### NOTE: The default option is to NOT ADD IT TO THE PATH, so make sure to change this. 
 ![installPythonToPath.png](./installPythonToPath.png)
 
+
 ### Step 2: Install Ida Pro/Ghidra 
 Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note that Ida Pro requires you install a seperate version for Python 2 and Python 3. Make sure you select the version for Python 2.7. 
-![idaInstdall.png](./idaInstall.png)
+![idaInstall.png](./idaInstall.png)
+
 
 ### Step 3: Install Visual Studio & Required SDK Dependencies
+Visual Studio 2017 is required to build the Winnie and toy example executables. Their are few key SDK's that need to be installed in order to build Winnie and the toy example correctly. 
+#### For x64 systems, you need:
+    * Windows 8.1 SDK
 
 
+
+
+
+### Step 4: Build Winnie: 
+First, open the containing folder using File >> open folder. You should have the entire repository
+![soultionExplorer.png](./soultionExplorer.png)
+
+
+First, you need to build the Winnie executable. Select the FullSpeed.sln, and set the startup item to be the proper configuration. For our example, we used FullSpeed.sln >> x64|Release:
+![startupItem.png](./startupItem.png)
+
+
+### Step 5: Build Toy Example:
 
 In this guide, I'll explain how to use Winnie to fuzz a toy example program. The code for this guide can be found in `samples/toy_example`. You can build it with Visual Studio. There are 3 projects in the solution:
 
