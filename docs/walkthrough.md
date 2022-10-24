@@ -129,10 +129,13 @@ Your disassembler will ask you to save the file, save it in \x64\Release as "bas
 
 
 ### Step 9: Fuzz the Toy Example 
-
-At this point, you should also have `basicblocks.bb` in the directory too. Now we can start fuzzing.
+At this point, you should also have `basicblocks.bb` in the directory too. Now we can start fuzzing. Navigate to '\x64\Release\ in CMD prompt', and execute the following command.
 
 `afl-fuzz -i in -o out -t 1000 -I 1000 -- -bbfile basicblocks.bb -- -harness harness.dll -no_minidumps -- toy_example.exe @@`
+
+You should see this screen pop up if successfful:
+
+![winnieWorking.png](./winnieWorking.png)
 
 **Breakdown of the command-line:**
 
