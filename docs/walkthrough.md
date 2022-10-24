@@ -21,6 +21,8 @@ Winnie requires you to be able to fork different processes, and as such will thr
 ![forkserverError.png](./forkserverError.png)
 
 
+
+
 ### Step 1: Install Python 2.7.XX 
 Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may run into pathing issues otherwise. Make sure when installing Python you select to install it to the path OR maunally add it to the path env variable. 
 #### NOTE: The default option is to NOT ADD IT TO THE PATH, so make sure to change this. 
@@ -28,10 +30,14 @@ Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may 
 ![installPythonToPath.png](./installPythonToPath.png)
 
 
+
+
 ### Step 2: Install Ida Pro/Ghidra 
 Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note that Ida Pro requires you install a seperate version for Python 2 and Python 3. Make sure you select the version for Python 2.7. 
 
 ![IdaInstall.png](./IdaInstall.png)
+
+
 
 
 ### Step 3: Generate csrss offsets
@@ -48,6 +54,7 @@ cat csrss_offsets.h # check the generated output
 The script downloads PDBs from Microsoft's symbol servers and parses them to extract the offsets for you automatically.
 
 
+
 ### Step 4: Install Visual Studio & Required SDK Dependencies
 Visual Studio 2017 is required to build the Winnie and toy example executables. Their are few key SDK's that need to be installed in order to build Winnie and the toy example correctly. 
 
@@ -59,7 +66,6 @@ Visual Studio 2017 is required to build the Winnie and toy example executables. 
         * Windows 8.1 SDK
         * Windows 10.0.19041 SDK
         * Visual Studio SDK 
-
 
 
 
@@ -82,16 +88,20 @@ Start the build process by selecting Build >> Build FullSpeed.sln. You should re
 
 
 
+
 ### Step 6: Build Toy Example:
-Next, you need to perform the same steps as mentioned above, but for the toy example.sln. Set the toy_example.sln to Release|x64 in the aformentioned dropdown.  
+Next, you need to perform the same steps as mentioned above, but for the toy example.sln. Set the toy_example.sln to Release|x64 in the aformentioned dropdown. 
 
 ![toyExample.png](./toyExample.png) 
 
-You should once again recieve a notification
+You should once again recieve a notification that the build has succedded. If you are unable to get a successful build, you likely need to install some mroe packages. A common one is *cannot find stdio.h* or *No Windows 10.0.19041 SDK*. 
+
+#### NOTE: Please note that if these packages are not showing up for installation, you may have to install a different version of Visual Studio with other dependencies, that can be then utilized in Visual Studio 2017. At the time of writing, Visual Studio 2022 had to be installed for the Windows 10.0.19041 SDK.
 
 
 
-In this guide, I'll explain how to use Winnie to fuzz a toy example program. The code for this guide can be found in `samples/toy_example`. You can build it with Visual Studio. There are 3 projects in the solution:
+
+### Step 7: Copy toy_example.exe, example_library.dll, harness.dll, & samples\toy_example\out to the x64\Release\ Directory
 
  - toy_example: this builds the main .exe we will fuzz
  - example_library: this is a .dll containing some buggy functionality that we want to target with our fuzzer
@@ -103,7 +113,22 @@ At this point, your directory structure should look like this:
 
 ![dir.png](./dir.png)
 
-Winnie collects coverage using *full-speed* instrumentation. Full-speed instrumentation essentially puts a breakpoint on each basic block. Thus, Winnie needs a list of the addresses of basic blocks we want to cover per module. This list is called the *bb-file* and it's specified with the `-bbfile` parameter. We can automatically generate this file with the IDAPython script `scripts/ida_basic_blocks.py` if you have IDA Pro. (There is also a script for Ghidra.) For more about the bbfile file format, check the README.
+
+
+### Step 8: Create 'basicblocks.bb' for toy_example.exe using IDA/Ghidra 
+Winnie collects coverage using *full-speed* instrumentation. Full-speed instrumentation essentially puts a breakpoint on each basic block. Thus, Winnie needs a list of the addresses of basic blocks we want to cover per module. This list is called the *bb-file* and it's specified with the `-bbfile` parameter. We can automatically generate this file with the IDAPython script `scripts/ida_basic_blocks.py` if you have IDA Pro. (There is also a script for Ghidra.) For more about the bbfile file format, check the README. 
+
+Open the toy_example.exe that you just moved to the x64\Release directory using IDA/Ghidra. For the rest of the guide, pictures of IDA Pro will be used. 
+#### NOTE: If IDA asks you to keep the dependencies linked when first opening a file, select *yes*. 
+
+Open the script for your disassembler located in \scripts\ida_basic_blocks.py or \scripts\ghidra_basic_blocks.py 
+![scriptFile.png](./scriptFile.png)
+
+Your disassembler will ask you to save the file, save it in \x64\Release as "basicblocks.bb". You should be able to open the file in a text editor of your choice and see a list of various adddresses. If you see "[none]" then you have done something wrong during execution of the script. 
+
+
+
+### Step 9: Fuzz the Toy Example 
 
 At this point, you should also have `basicblocks.bb` in the directory too. Now we can start fuzzing.
 
