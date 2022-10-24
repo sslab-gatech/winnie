@@ -3,7 +3,7 @@ This is a complete guide to setting up Winnie, installing required dependencies,
 
 ## Requirements:
 * Visual Studio 2017/2019
-* Ida Pro (64-bit) or Ghidra 
+* Ida Pro or Ghidra 
 * Winnie Code (unzipped to target directory)
 * Python 2.7.XX 
 * Windows 10 1809/21H2 (1809 preferred)
@@ -57,6 +57,8 @@ Visual Studio 2017 is required to build the Winnie and toy example executables. 
     * Individual Components:
         * Windows Universal C Runtime
         * Windows 8.1 SDK
+        * Windows 10.0.19041 SDK
+        * Visual Studio SDK 
 
 
 
@@ -73,6 +75,7 @@ First, you need to build the Winnie executable. Select the FullSpeed.sln, and se
 ![startupItem.png](./startupItem.png)
 
 Start the build process by selecting Build >> Build FullSpeed.sln. You should recieve a success message along the lines of this: 
+
 ![winnieSuccess.png](./winnieSuccess.png)
 
 #### NOTE: If you are recieving errors, you likely have a missing workload or dependency issue. While not all of the SDK's mentioned above are required, they are reccomendded for coverage reasons and simplicity to install. 
@@ -80,6 +83,13 @@ Start the build process by selecting Build >> Build FullSpeed.sln. You should re
 
 
 ### Step 6: Build Toy Example:
+Next, you need to perform the same steps as mentioned above, but for the toy example.sln. Set the toy_example.sln to Release|x64 in the aformentioned dropdown.  
+
+![toyExample.png](./toyExample.png) 
+
+You should once again recieve a notification
+
+
 
 In this guide, I'll explain how to use Winnie to fuzz a toy example program. The code for this guide can be found in `samples/toy_example`. You can build it with Visual Studio. There are 3 projects in the solution:
 
