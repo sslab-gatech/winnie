@@ -7,11 +7,11 @@ This is a complete guide to setting up Winnie, installing required dependencies,
 * Winnie Code (unzipped to target directory)
 * Python 2.7.XX 
 * Windows 10 1809/21H2 (1809 preferred)
-* Virtual machine or enviroment with *at least* 4 cores per processor
+* Virtual machine or environment with *at least* 4 cores per processor
 * Windows CMD prompt (DO NOT USE POWERSHELL)
-#### NOTE: Winnie only *offically* supports Windows 10 1809, Python 2.7.XX, and Visual Studio 2017. All other configurations are considered unsupported. 
+#### NOTE: Winnie only *officially* supports Windows 10 1809, Python 2.7.XX, and Visual Studio 2017. All other configurations are considered unsupported. 
 
-### Step 0: VM Setup: Configure for 4 Cores Per Processer
+### Step 0: VM Setup: Configure for 4 Cores Per Processor
 Winnie requires you to be able to fork different processes, and as such will throw an error if your VM does not have the proper configurations. Make sure you set *at least* 4 cores per processor. The minimum setting are pictured below for VMWare: 
 
 ![vmSetup.png](./vmSetup.png)
@@ -24,7 +24,7 @@ Winnie requires you to be able to fork different processes, and as such will thr
 
 
 ### Step 1: Install Python 2.7.XX 
-Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may run into pathing issues otherwise. Make sure when installing Python you select to install it to the path OR maunally add it to the path env variable. 
+Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may run into pathing issues otherwise. Make sure when installing Python you select to install it to the path OR manually add it to the path environment variable. 
 #### NOTE: The default option is to NOT ADD IT TO THE PATH, so make sure to change this. 
 
 ![installPythonToPath.png](./installPythonToPath.png)
@@ -33,7 +33,7 @@ Python 2 must be installed *before* installing Winnie and IDA/Ghidra as you may 
 
 
 ### Step 2: Install Ida Pro/Ghidra 
-Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note that Ida Pro requires you install a seperate version for Python 2 and Python 3. Make sure you select the version for Python 2.7. 
+Install Ida Pro/Ghidra for your desired 32/64 bit operating system. Please note that Ida Pro requires you install a separate version for Python 2 and Python 3. Make sure you select the version for Python 2.7. 
 
 ![IdaInstall.png](./IdaInstall.png)
 
@@ -41,7 +41,7 @@ Install Ida Pro/Ghidra for your desired 32/64bit operating system. Please note t
 
 
 ### Step 3: Generate csrss offsets
-The forklib relies on hardcoded offsets that are reverse-engineered from `csrss.dll` and `ntdll.dll`. As you might expect, these offsets vary from system-to-system. **If the offsets are wrong, the fuzzer will not work. You need to regenerate the offsets and recompile for YOUR system.** To generate them:
+The forklib relies on hard-coded offsets that are reverse-engineered from `csrss.dll` and `ntdll.dll`. As you might expect, these offsets vary from system-to-system. **If the offsets are wrong, the fuzzer will not work. You need to regenerate the offsets and recompile for YOUR system.** To generate them:
 
 ```bash
 cd forklib/
@@ -56,11 +56,11 @@ The script downloads PDBs from Microsoft's symbol servers and parses them to ext
 
 
 ### Step 4: Install Visual Studio & Required SDK Dependencies
-Visual Studio 2017 is required to build the Winnie and toy example executables. Their are few key SDK's that need to be installed in order to build Winnie and the toy example correctly. 
+Visual Studio 2017 is required to build the Winnie and toy example executables. Their are a few key SDK's that need to be installed in order to build Winnie and the toy example correctly. 
 
 #### For x64 systems, you need:
     * Workloads: 
-        * Desktop Devolopment with C++ 
+        * Desktop Development with C++ 
     * Individual Components:
         * Windows Universal C Runtime
         * Windows 8.1 SDK
@@ -71,7 +71,7 @@ Visual Studio 2017 is required to build the Winnie and toy example executables. 
 
 
 ### Step 5: Build Winnie: 
-First, open the containing folder using File >> open folder. You should have the entire repository pictured in the soultion explorer by default, but can open the soultion explorer via View >> Soultion Explorer.
+First, open the containing folder using File >> open folder. You should have the entire repository pictured in the solution explorer by default, but can open the solution explorer via View >> Solution Explorer.
 
 ![soultionExplorer.png](./soultionExplorer.png)
 
@@ -80,21 +80,21 @@ First, you need to build the Winnie executable. Select the FullSpeed.sln, and se
 
 ![startupItem.png](./startupItem.png)
 
-Start the build process by selecting Build >> Build FullSpeed.sln. You should recieve a success message along the lines of this: 
+Start the build process by selecting Build >> Build FullSpeed.sln. You should receive a success message along the lines of this: 
 
 ![winnieSuccess.png](./winnieSuccess.png)
 
-#### NOTE: If you are recieving errors, you likely have a missing workload or dependency issue. While not all of the SDK's mentioned above are required, they are reccomendded for coverage reasons and simplicity to install. 
+#### NOTE: If you are receiving errors, you likely have a missing workload or dependency issue. While not all of the SDK's mentioned above are required, they are recommended for coverage reasons and simplicity to install. 
 
 
 
 
 ### Step 6: Build Toy Example:
-Next, you need to perform the same steps as mentioned above, but for the toy example.sln. Set the toy_example.sln to Release|x64 in the aformentioned dropdown. 
+Next, you need to perform the same steps as mentioned above, but for the toy example.sln. Set the toy_example.sln to Release|x64 in the aforementioned drop down. 
 
 ![toyExample.png](./toyExample.png) 
 
-You should once again recieve a notification that the build has succedded. If you are unable to get a successful build, you likely need to install some mroe packages. A common one is *cannot find stdio.h* or *No Windows 10.0.19041 SDK*. 
+You should once again receive a notification that the build has succeeded. If you are unable to get a successful build, you likely need to install some more packages. A common one is *cannot find stdio.h* or *No Windows 10.0.19041 SDK*. 
 
 #### NOTE: Please note that if these packages are not showing up for installation, you may have to install a different version of Visual Studio with other dependencies, that can be then utilized in Visual Studio 2017. At the time of writing, Visual Studio 2022 had to be installed for the Windows 10.0.19041 SDK.
 
@@ -116,7 +116,7 @@ At this point, your directory structure should look like this:
 
 
 ### Step 8: Create 'basicblocks.bb' for toy_example.exe using IDA/Ghidra 
-Winnie collects coverage using *full-speed* instrumentation. Full-speed instrumentation essentially puts a breakpoint on each basic block. Thus, Winnie needs a list of the addresses of basic blocks we want to cover per module. This list is called the *bb-file* and it's specified with the `-bbfile` parameter. We can automatically generate this file with the IDAPython script `scripts/ida_basic_blocks.py` if you have IDA Pro. (There is also a script for Ghidra.) For more about the bbfile file format, check the README. 
+Winnie collects coverage using *full-speed* instrumentation. Full-speed instrumentation essentially puts a break point on each basic block. Thus, Winnie needs a list of the addresses of basic blocks we want to cover per module. This list is called the *bb-file* and it's specified with the `-bbfile` parameter. We can automatically generate this file with the IDAPython script `scripts/ida_basic_blocks.py` if you have IDA Pro. (There is also a script for Ghidra.) For more about the bbfile file format, check the README. 
 
 Open the toy_example.exe that you just moved to the x64\Release directory using IDA/Ghidra. For the rest of the guide, pictures of IDA Pro will be used. 
 #### NOTE: If IDA asks you to keep the dependencies linked when first opening a file, select *yes*. 
@@ -124,7 +124,7 @@ Open the toy_example.exe that you just moved to the x64\Release directory using 
 Open the script for your disassembler located in \scripts\ida_basic_blocks.py or \scripts\ghidra_basic_blocks.py 
 ![scriptFile.png](./scriptFile.png)
 
-Your disassembler will ask you to save the file, save it in \x64\Release as "basicblocks.bb". You should be able to open the file in a text editor of your choice and see a list of various adddresses. If you see "[none]" then you have done something wrong during execution of the script. 
+Your disassembler will ask you to save the file, save it in \x64\Release as "basicblocks.bb". You should be able to open the file in a text editor of your choice and see a list of various addresses. If you see "[none]" then you have done something wrong during execution of the script. 
 
 
 
@@ -133,7 +133,7 @@ At this point, you should also have `basicblocks.bb` in the directory too. Now w
 
 `afl-fuzz -i in -o out -t 1000 -I 1000 -- -bbfile basicblocks.bb -- -harness harness.dll -no_minidumps -- toy_example.exe @@`
 
-You should see this screen pop up if successfful:
+You should see this screen pop up if successful:
 
 ![winnieWorking.png](./winnieWorking.png)
 
@@ -141,11 +141,11 @@ You should see this screen pop up if successfful:
 
 1. `afl-fuzz -i in -o out -t 1000 -I 1000` Standard AFL parameters `-i` and `-o` for input/output dirs, execution timeout (`-t`) of 1000ms, initialization timeout (`-I`) of 1000ms.
 
-2. `--` End of AFL options and start of fullspeed instrumentation options
+2. `--` End of AFL options and start of full-speed instrumentation options
 
 3. `-bbfile basicblocks.bb` (Required) Use the basic blocks specified in the bbfile `basicblocks.bb`.
 
-4. `--` End of the fullspeed options and start of the forkserver options
+4. `--` End of the full-speed options and start of the forkserver options
 
 5. `-harness harness.dll` (Required) Use our fuzzing harness specific to toy_example.
 
