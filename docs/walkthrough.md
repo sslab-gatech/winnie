@@ -8,7 +8,8 @@ This is a complete guide to setting up Winnie, installing required dependencies,
 * Python 2.7.XX 
 * Windows 10 1809/21H2 (1809 preferred)
 * Virtual machine or environment with *at least* 4 cores per processor
-* Windows CMD prompt (DO NOT USE POWERSHELL)
+* Windows CMD prompt 
+    * All further commands are written for Windows CMD prompt, use PowerShell at your own discretion
 #### NOTE: Winnie only *officially* supports Windows 10 1809, Python 2.7.XX, and Visual Studio 2017. All other configurations are considered unsupported. 
 
 ### Step 0: VM Setup: Configure for 4 Cores Per Processor
@@ -101,13 +102,14 @@ You should once again receive a notification that the build has succeeded. If yo
 
 
 
-### Step 7: Copy toy_example.exe, example_library.dll, harness.dll, & samples\toy_example\out to the x64\Release\ Directory
+### Step 7: Copy toy_example.exe, example_library.dll, harness.dll, & samples\toy_example\in to the x64\Release\ Directory
 
  - toy_example: this builds the main .exe we will fuzz
  - example_library: this is a .dll containing some buggy functionality that we want to target with our fuzzer
  - harness: this provides a bare-bones example harness to use with Winnie.
+ - toy_example\in: Contains information necessary for fuzzing execution 
 
-To set up the fuzzer, copy the target application (toy_example.exe and example_library.dll) to the Winnie directory (so it's next to afl-fuzz.exe). AFL needs seed inputs, so copy the seed input file (in\input). Lastly, Winnie needs a fuzzing harness to call the target, so copy our fuzzing harness `harness.dll` next to afl-fuzz.exe as well.
+To set up the fuzzer, copy the target application (toy_example.exe and example_library.dll) to the Winnie directory (so it's next to afl-fuzz.exe). AFL needs seed inputs, so copy the seed input file (in\input). Lastly, Winnie needs a fuzzing harness to call the target, so copy the example fuzzing harness `harness.dll` next to afl-fuzz.exe as well.
 
 At this point, your directory structure should look like this:
 
