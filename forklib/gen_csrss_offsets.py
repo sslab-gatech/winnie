@@ -9,10 +9,6 @@ if not (sys.maxsize > 2**32) and os.name == 'nt':
     print('Sorry, 32-bit python is not supported because of WOW64 redirection. Please use 64-bit python')
     raise ValueError('Unsupported python version')
 
-if sys.version_info >= (3, 0):
-    print("Sorry, python3 isn't supported")
-    raise ValueError('Unsupported python version')
-
 import os.path
 from pefile import PE
 from shutil import copyfileobj
@@ -365,7 +361,7 @@ def main():
 
     f.close()
 
-    print 'Successfully generated ' + genfile
+    print('Successfully generated ' + genfile)
 
 if __name__ == "__main__":
     main()
