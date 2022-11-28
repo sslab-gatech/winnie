@@ -36,9 +36,8 @@ The forklib relies on hardcoded offsets that are reverse-engineered from `csrss.
 
 ```bash
 cd forklib/
-# python3 is not supported. Please use python2
-python2 -m pip install construct pefile # get dependencies
-python2 ./gen_csrss_offsets.py
+python -m pip install construct pefile # get dependencies
+python ./gen_csrss_offsets.py
 cat csrss_offsets.h # check the generated output
 ```
 
